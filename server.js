@@ -1,9 +1,13 @@
-require("dotenv").config();
-var express = require("express");
-var bodyParser = require("body-parser");
-var exphbs = require("express-handlebars");
+require('dotenv').config();
+var express = require('express');
+var bodyParser = require('body-parser');
+var exphbs = require('express-handlebars');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var morgan = require('morgan');
+var User = require('./models/user');
 
-var db = require("./models");
+var db = require('./models');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -11,26 +15,128 @@ var PORT = process.env.PORT || 3000;
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static('public'));
 
+app.use(morgan('dev'));
+
+app.use(cookieParser());
+
+// initialize express-session to allow us to track the logged-in user accross sections
+app.use(session({
+  key: 'user_sid',
+  secret: 'somerandomstuff',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    expires: 600000
+  }
+}));
+
+/*This middleware will check if user's cookie is still saved in browser and user is not set, 
+then automatically log the user out. This usually happens when you stop your express server 
+after login, your cookie still remains saved in the browser. */
+app.use( (req, res, next) => {
+  if (req.cookies.user_sid && !req.session.user) {
+    res.clearCookie('user_sid');
+  }
+  next();
+});
+
+// Middleware function to check for logged in users
+var sessionChecker = (req, res, next) => {
+  if (req.session.user && req.cookies.user_sid) {
+    res.redirect('/dashboard');
+  } else {
+    next();
+  }
+};
+
+//route for Home page
+app.get('/', sessionChecker, (req, res) => {
+  res.redirect('/login');
+});
+
+//route for user signup
+app.route('/signup')
+  .get(sessionChecker, (req, res) => {
+    res.sendFile(__dirname + '/public/signup.html');
+  })
+  .post((req, res) => {
+    User.create({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password
+    })
+    .then(user => {
+      req.session.user = user.dataValues;
+      res.redirect('/dashboard');
+    })
+    .catch(error => {
+      res.redirect('/signup');
+    });
+  });
+
+//route for user Login
+app.route('/login')
+  .get(sessionChecker, (req, res) => {
+    res.sendFile(__dirname + '/public/login.html');
+  })
+  .post((req, res) => {
+    var username = req.body.username;
+    var password = req.body.password;
+    User.findOne({ where: { username: username } })
+    .then(function (user) {
+      if (!user) {
+        res.redirect('/login');
+      } else if (!user.validPassword(password)) {
+        res.redirect('/login');
+      } else {
+        req.session.user = user.dataValues;
+        res.redirect('/dashboard');
+      }
+    });
+  });
+
+//route for user's dashboard
+app.get('/dashboard', (req, res) => {
+  if (req.session.user && req.cookies.user_sid) {
+    res.sendFile(__dirname + '/public/dashboard.html');
+  } else {
+    res.redirect('/login');
+  }
+});
+
+//route for user Logout
+app.get('/logout', (req, res) => {
+  if (req.session.user && req.cookies.user_sid) {
+    res.clearCookie('user_sid');
+    res.redirect('/');
+  } else {
+    res.redirect('/login');
+  }
+});
+
+app.use(function (req, res, next) {
+  res.status(404).send("Sorry can't find that!")
+});
 // Handlebars
 app.engine(
-  "handlebars",
+  'handlebars',
   exphbs({
-    defaultLayout: "main"
+    defaultLayout: 'main'
   })
 );
-app.set("view engine", "handlebars");
+app.set('view engine', 'handlebars');
 
 // Routes
-require("./routes/apiRoutes")(app);
-require("./routes/htmlRoutes")(app);
+require('./routes/apiRoutes')(app);
+require('./routes/htmlRoutes')(app);
 
 var syncOptions = { force: false };
 
 // If running a test, set syncOptions.force to true
 // clearing the `testdb`
-if (process.env.NODE_ENV === "test") {
+if (process.env.NODE_ENV === 'test') {
   syncOptions.force = true;
 }
 
@@ -38,7 +144,7 @@ if (process.env.NODE_ENV === "test") {
 db.sequelize.sync(syncOptions).then(function() {
   app.listen(PORT, function() {
     console.log(
-      "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
+      '==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.',
       PORT,
       PORT
     );
