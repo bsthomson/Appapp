@@ -1,0 +1,1 @@
+CREATE DATABASE appapp_db;
