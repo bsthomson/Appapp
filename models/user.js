@@ -12,14 +12,12 @@ module.exports = (sequelize, DataTypes) => {
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(user.password, salt);
       }
-    },
-    instanceMethods: {
-      validPassword: function(password) {
-      return bcrypt.compareSync(password, this.password)
-      }
     }
   });
-  User.associate = function(models) {
+  User.prototype.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+  };
+  User.associate = function(/*models*/) {
     // associations can be defined here
   };
   return User;
