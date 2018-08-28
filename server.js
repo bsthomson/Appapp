@@ -16,6 +16,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
+app.set('view engin', 'handlebars');
+
 app.use(morgan('dev'));
 
 app.use(cookieParser());
@@ -58,7 +61,7 @@ app.get('/', sessionChecker, (req, res) => {
 //route for user signup
 app.route('/signup')
   .get(sessionChecker, (req, res) => {
-    res.sendFile(__dirname + '/public/html/signup.html');
+    res.render('signup');
   })
   .post((req, res) => {
     db.User.create({
@@ -79,7 +82,7 @@ app.route('/signup')
 //route for user Login
 app.route('/login')
   .get(sessionChecker, (req, res) => {
-    res.sendFile(__dirname + '/public/html/login.html');
+    res.render('login');
   })
   .post((req, res) => {
     var username = req.body.username;
