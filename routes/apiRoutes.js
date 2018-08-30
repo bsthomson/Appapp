@@ -2,9 +2,14 @@ var db = require('../models');
 var request = require('request');
 
 module.exports = function(app) {
-  // app.get('/api/petfinder', function (req, res) {
-  //   request
-  // })
+  app.get('/api/pets', function (req, res) {
+    var apikey = process.env.PETFINDER_KEY;
+    var animal = 'dog';
+    var zipcode = 66205;
+    request('http://api.petfinder.com/pet.find?key=' + apikey + '&animal=' + animal + '&location=' + zipcode + '&format=json', function (error, response, body) {
+      return res.json(response);
+    });
+  });
   // Get all examples
   app.get('/api/examples', function(req, res) {
     db.User.findAll({}).then(function(dbExamples) {
