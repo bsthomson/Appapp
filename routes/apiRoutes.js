@@ -1,4 +1,5 @@
 var db = require('../models');
+var request = require('request');
 
 module.exports = function(app) {
   // Get all examples
