@@ -2,6 +2,9 @@ var db = require('../models');
 var request = require('request');
 
 module.exports = function(app) {
+  // app.get('/api/petfinder', function (req, res) {
+  //   request
+  // })
   // Get all examples
   app.get('/api/examples', function(req, res) {
     db.User.findAll({}).then(function(dbExamples) {
