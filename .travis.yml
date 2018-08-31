@@ -9,3 +9,11 @@ cache:
     - node_modules
 before_install:
   - mysql -e 'CREATE DATABASE testdb;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test'
+addons:
+  apt:
+    sources:
+    - mysql-6.7-trusty
+    packages:
+    - mysql-server
+    - mysql-client
