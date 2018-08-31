@@ -9,4 +9,4 @@ cache:
     - node_modules
 before_install:
   - mysql -e 'CREATE DATABASE appapp_db;'
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS test'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS appapp_db'
