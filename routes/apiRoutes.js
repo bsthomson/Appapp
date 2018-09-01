@@ -6,7 +6,8 @@ module.exports = function(app) {
     var apikey = process.env.PETFINDER_KEY;
     var animal = 'dog';
     var zipcode = req.session.user.zipcode;
-    request('http://api.petfinder.com/pet.find?key=' + apikey + '&animal=' + animal + '&location=' + zipcode + '&format=json', function (error, response, body) {
+    var count = 8;
+    request('http://api.petfinder.com/pet.find?key=' + apikey + '&animal=' + animal + '&location=' + zipcode + '&count=' + count + '&format=json', function (error, response, body) {
       return res.json(JSON.parse(body));
     });
   });
