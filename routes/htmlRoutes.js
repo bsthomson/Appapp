@@ -26,7 +26,7 @@ module.exports = function(app) {
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
-        zipcode: req.body.password
+        zipcode: req.body.zipcode
       })
         .then(user => {
           req.session.user = user.dataValues;

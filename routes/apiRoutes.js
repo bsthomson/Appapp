@@ -5,9 +5,9 @@ module.exports = function(app) {
   app.get('/api/pets', function (req, res) {
     var apikey = process.env.PETFINDER_KEY;
     var animal = 'dog';
-    var zipcode = 66205;
+    var zipcode = req.session.user.zipcode;
     request('http://api.petfinder.com/pet.find?key=' + apikey + '&animal=' + animal + '&location=' + zipcode + '&format=json', function (error, response, body) {
-      return res.json(body);
+      return res.json(JSON.parse(body));
     });
   });
   // Get all examples
