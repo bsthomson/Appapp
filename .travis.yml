@@ -1,5 +1,6 @@
 language: node_js
 node_js: "8"
+services: mysql
 branches:
   only:
   - master
@@ -7,4 +8,5 @@ cache:
   directories:
     - node_modules
 before_install:
-  - mysql -e 'CREATE DATABASE testdb;'
+  - mysql -e 'CREATE DATABASE appapp_db;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS appapp_db'
