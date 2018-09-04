@@ -25,6 +25,16 @@ module.exports = function(app) {
     });
   });
 
+  app.post('/api/favorites', function (req, res) {
+    var savedInfo = req.body;
+    savedInfo.username = req.session.user.username;
+
+    db.Favorite.create(savedInfo)
+      .then(function (dbFavorite) {
+        res.json(dbFavorite);
+      });
+  });
+
   // Delete an example by id
   app.delete('/api/examples/:id', function(req, res) {
     db.User.destroy({ where: { id: req.params.id } }).then(function(dbExample) {

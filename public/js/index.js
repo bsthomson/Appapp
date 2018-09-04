@@ -8,14 +8,24 @@ var $petList = $('#pet-list');
 
 // The API object contains methods for each kind of request we'll make
 var API = {
-  getPets: function(example) {
+  getPets: function(pet) {
     return $.ajax({
       headers: {
         'Content-Type': 'application/json'
       },
       type: 'GET',
       url: 'api/pets',
-      data: JSON.stringify(example)
+      data: JSON.stringify(pet)
+    });
+  },
+  putPetInfo: function (pet) {
+    return $.ajax({
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      type: 'POST',
+      url: 'api/favorites',
+      data: JSON.stringify(pet)
     });
   },
   saveExample: function(example) {
@@ -43,26 +53,35 @@ var API = {
 };
 
 var retrievePetfinderResults = function () {
+  event.preventDefault();
+
   API.getPets().then(function (data) {
     var data = data.petfinder.pets.pet;
     var $pets = data.map(function (pet) {
-      console.log(pet.name.$t);
-      var $a = $('<a>')
-        .text(pet.name.$t)
-        .attr('href', '/pet/' + pet.id.$t);
+      console.log(pet.media.photos.photo[3].$t);
+      var $petinfo = $(
+        `<p><a id='pet-name' value='${pet.name.$t}' href='/pet/${pet.id.$t}'>${pet.name.$t}</a></p>
+        <p><a id='pet-image' value='${pet.media.photos.photo[1].$t}' img src='${pet.media.photos.photo[1].$t}' alt='animal'></a></p>
+        <a id='pet-breed' value='${pet.breeds.breed.$t}'></a>
+        <a id='pet-id' value='${pet.id.$t}'></a>
+        <a id='pet-shelter-id' value='${pet.shelterPetId.$t}'></a>`
+      );
 
       var $li=$('<li>')
         .attr({
           class: 'list-group-item',
           'data-id': pet.id.$t
         })
-        .append($a);
+        .append($petinfo);
 
-      var $button = $('<button>')
+      var $delButton = $('<button>')
         .addClass('btn btn-danger float-right delete')
         .text('x');
+      var $saveButton = $('<button>')
+        .addClass('btn btn-secondary float-left save')
+        .text('favorite');
 
-      $li.append($button);
+      $li.append($delButton).append($saveButton);
 
       return $li;
     });
@@ -72,33 +91,23 @@ var retrievePetfinderResults = function () {
   });
 };
 
-// refreshExamples gets new examples from the db and repopulates the list
-var refreshExamples = function() {
-  API.getExamples().then(function(data) {
-    var $examples = data.map(function(example) {
-      var $a = $('<a>')
-        .text(example.text)
-        .attr('href', '/example/' + example.id);
+var favoritePet = function (event) {
+  event.preventDefault();
+  console.log($('#pet-id').attr('value'));
 
-      var $li = $('<li>')
-        .attr({
-          class: 'list-group-item',
-          'data-id': example.id
-        })
-        .append($a);
-
-      var $button = $('<button>')
-        .addClass('btn btn-danger float-right delete')
-        .text('ｘ');
-
-      $li.append($button);
-
-      return $li;
+  var petFavorite = {
+    petid: $('#pet-id').attr('value'),
+    photolocation: $('#pet-image').attr('value'),
+    petbreed: $('#pet-breed').attr('value'),
+    petname: $('#pet-name').attr('value'),
+    petshelterid: $('#pet-shelter-id').attr('value')
+  };
+  
+  API.putPetInfo(petFavorite)
+    .then(function () {
+      console.log(petFavorite);
+      $('<button>').prop('disabled', true);
     });
-
-    $exampleList.empty();
-    $exampleList.append($examples);
-  });
 };
 
 // handleFormSubmit is called whenever we submit a new example
@@ -140,3 +149,4 @@ var handleDeleteBtnClick = function() {
 $submitBtn.on('click', handleFormSubmit);
 $exampleList.on('click', '.delete', handleDeleteBtnClick);
 $findPets.on('click', retrievePetfinderResults);
+$petList.on('click', '.save', favoritePet);
