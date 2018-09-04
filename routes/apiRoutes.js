@@ -26,9 +26,13 @@ module.exports = function(app) {
   });
 
   app.post('/api/favorites', function (req, res) {
-    db.Favorite.create(req.body).then(function (dbFavorite) {
-      res.json(dbFavorite);
-    });
+    var savedInfo = req.body;
+    savedInfo.username = req.session.user.username;
+
+    db.Favorite.create(savedInfo)
+      .then(function (dbFavorite) {
+        res.json(dbFavorite);
+      });
   });
 
   // Delete an example by id

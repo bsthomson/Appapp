@@ -58,9 +58,13 @@ var retrievePetfinderResults = function () {
   API.getPets().then(function (data) {
     var data = data.petfinder.pets.pet;
     var $pets = data.map(function (pet) {
-      console.log(pet.name.$t);
+      console.log(pet.media.photos.photo[3].$t);
       var $petinfo = $(
-        `<a href='/pet/${pet.id.$t}>${pet.name.$t}</a>`
+        `<p><a id='pet-name' value='${pet.name.$t}' href='/pet/${pet.id.$t}'>${pet.name.$t}</a></p>
+        <p><a id='pet-image' value='${pet.media.photos.photo[1].$t}' img src='${pet.media.photos.photo[1].$t}' alt='animal'></a></p>
+        <a id='pet-breed' value='${pet.breeds.breed.$t}'></a>
+        <a id='pet-id' value='${pet.id.$t}'></a>
+        <a id='pet-shelter-id' value='${pet.shelterPetId.$t}'></a>`
       );
 
       var $li=$('<li>')
@@ -87,39 +91,23 @@ var retrievePetfinderResults = function () {
   });
 };
 
-// refreshExamples gets new examples from the db and repopulates the list
-var refreshExamples = function() {
-  API.getExamples().then(function(data) {
-    var $examples = data.map(function(example) {
-      var $a = $('<a>')
-        .text(example.text)
-        .attr('href', '/example/' + example.id);
-
-      var $li = $('<li>')
-        .attr({
-          class: 'list-group-item',
-          'data-id': example.id
-        })
-        .append($a);
-
-      var $delButton = $('<button>')
-        .addClass('btn btn-danger float-right delete')
-        .text('ｘ');
-
-      $li.append($saveButton).append($delButton);
-
-      return $li;
-    });
-
-    $exampleList.empty();
-    $exampleList.append($examples);
-  });
-};
-
 var favoritePet = function (event) {
   event.preventDefault();
+  console.log($('#pet-id').attr('value'));
 
-  console.log('hey');
+  var petFavorite = {
+    petid: $('#pet-id').attr('value'),
+    photolocation: $('#pet-image').attr('value'),
+    petbreed: $('#pet-breed').attr('value'),
+    petname: $('#pet-name').attr('value'),
+    petshelterid: $('#pet-shelter-id').attr('value')
+  };
+  
+  API.putPetInfo(petFavorite)
+    .then(function () {
+      console.log(petFavorite);
+      $('<button>').prop('disabled', true);
+    });
 };
 
 // handleFormSubmit is called whenever we submit a new example
