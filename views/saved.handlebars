@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="page-header">
+        <h1>Simple Auth-System</h1>
+    </div>
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/signup">Sign Up</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/login">Log In</a></li>
+                    <li><a href="/logout">Log Out</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container row">
+        <h1>Hi, Welcome to your Dashboard</h1>
+        <div class = 'row'>
+            <div class = 'col' id = 'saved-list'>
+
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-8 offset-2">
+                <h3>Saved Pets</h3>
+                <ul id="saved-list" class="list-group">
+                    {{#each pets}}
+                    <li data-id="{{this.id}}" class="list-group-item">
+                        <a href="pet/{{this.id}}">{{this.text}}</a>
+                        <button class="btn btn-danger float-right delete">x</button>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
