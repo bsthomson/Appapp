@@ -8,14 +8,24 @@ var $petList = $('#pet-list');
 
 // The API object contains methods for each kind of request we'll make
 var API = {
-  getPets: function(example) {
+  getPets: function(pet) {
     return $.ajax({
       headers: {
         'Content-Type': 'application/json'
       },
       type: 'GET',
       url: 'api/pets',
-      data: JSON.stringify(example)
+      data: JSON.stringify(pet)
+    });
+  },
+  putPetInfo: function (pet) {
+    return $.ajax({
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      type: 'POST',
+      url: 'api/favorites',
+      data: JSON.stringify(pet)
     });
   },
   saveExample: function(example) {
@@ -43,26 +53,31 @@ var API = {
 };
 
 var retrievePetfinderResults = function () {
+  event.preventDefault();
+
   API.getPets().then(function (data) {
     var data = data.petfinder.pets.pet;
     var $pets = data.map(function (pet) {
       console.log(pet.name.$t);
-      var $a = $('<a>')
-        .text(pet.name.$t)
-        .attr('href', '/pet/' + pet.id.$t);
+      var $petinfo = $(
+        `<a href='/pet/${pet.id.$t}>${pet.name.$t}</a>`
+      );
 
       var $li=$('<li>')
         .attr({
           class: 'list-group-item',
           'data-id': pet.id.$t
         })
-        .append($a);
+        .append($petinfo);
 
-      var $button = $('<button>')
+      var $delButton = $('<button>')
         .addClass('btn btn-danger float-right delete')
         .text('x');
+      var $saveButton = $('<button>')
+        .addClass('btn btn-secondary float-left save')
+        .text('favorite');
 
-      $li.append($button);
+      $li.append($delButton).append($saveButton);
 
       return $li;
     });
@@ -87,11 +102,11 @@ var refreshExamples = function() {
         })
         .append($a);
 
-      var $button = $('<button>')
+      var $delButton = $('<button>')
         .addClass('btn btn-danger float-right delete')
         .text('ｘ');
 
-      $li.append($button);
+      $li.append($saveButton).append($delButton);
 
       return $li;
     });
@@ -99,6 +114,12 @@ var refreshExamples = function() {
     $exampleList.empty();
     $exampleList.append($examples);
   });
+};
+
+var favoritePet = function (event) {
+  event.preventDefault();
+
+  console.log('hey');
 };
 
 // handleFormSubmit is called whenever we submit a new example
@@ -140,3 +161,4 @@ var handleDeleteBtnClick = function() {
 $submitBtn.on('click', handleFormSubmit);
 $exampleList.on('click', '.delete', handleDeleteBtnClick);
 $findPets.on('click', retrievePetfinderResults);
+$petList.on('click', '.save', favoritePet);
