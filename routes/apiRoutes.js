@@ -11,10 +11,15 @@ module.exports = function(app) {
       return res.json(JSON.parse(body));
     });
   });
-  // Get all examples
-  app.get('/api/examples', function(req, res) {
-    db.User.findAll({}).then(function(dbExamples) {
-      res.json(dbExamples);
+
+  // get all Favorites
+  app.get('/api/favorites', function (req, res) {
+    db.Favorite.findAll({
+      where: {
+        username: req.session.user.username
+      }
+    }).then(function (dbFavorites) {
+      res.json(dbFavorites);
     });
   });
 
