@@ -148,7 +148,8 @@ var retrieveFavorites = function () {
         <p><a id='pet-image' value='${pet.photolocation}' img src='${pet.photolocation}' alt='animal'></a></p>
         <a id='pet-breed' value='${pet.petbreed}'></a>
         <a id='pet-id' value='${pet.petid}'></a>
-        <a id='pet-shelter-id' value='${pet.petshelterid}'></a>`
+        <a id='pet-shelter-id' value='${pet.petshelterid}'></a>
+        <a href='/favorites/${pet.id}></a>`
       );
 
       var $li=$('<li>')

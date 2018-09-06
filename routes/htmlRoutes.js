@@ -70,11 +70,17 @@ module.exports = function(app) {
 
   //route for user's saved
   app.get('/saved', (req, res) => {
-    if (req.session.user && req.cookies.user_sid) {
-      res.render('saved');
-    } else {
-      res.redirect('/login');
-    }
+    db.Favorite.findAll({})
+      .then(function (data) {
+        if (req.session.user && req.cookies.user_sid) {
+          var hbsObject = {
+            pets: data
+          };
+          res.render('saved', hbsObject);
+        } else {
+          res.redirect('/login');
+        }
+      });
   });
 
   //route for user Logout

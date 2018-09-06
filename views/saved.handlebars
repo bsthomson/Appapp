@@ -39,7 +39,7 @@
                 <ul id="saved-list" class="list-group">
                     {{#each pets}}
                     <li data-id="{{this.id}}" class="list-group-item">
-                        <a href="pet/{{this.id}}">{{this.text}}</a>
+                        <a href="pet/{{this.id}}">{{this.petname}}</a>
                         <button class="btn btn-danger float-right delete">x</button>
                     </li>
                     {{/each}}
