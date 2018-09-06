@@ -54,14 +54,11 @@ var retrievePetfinderResults = function () {
         })
         .append($petinfo);
 
-      var $delButton = $('<button>')
-        .addClass('btn btn-danger float-right delete')
-        .text('x');
       var $saveButton = $('<button>')
         .addClass('btn btn-secondary float-left save')
         .text('favorite');
 
-      $li.append($delButton).append($saveButton);
+      $li.append($saveButton);
 
       return $li;
     });
@@ -113,11 +110,8 @@ var retrieveFavorites = function () {
       var $delButton = $('<button>')
         .addClass('btn btn-danger float-right delete')
         .text('x');
-      var $saveButton = $('<button>')
-        .addClass('btn btn-secondary float-left save')
-        .text('favorite');
 
-      $li.append($delButton).append($saveButton);
+      $li.append($delButton);
 
       return $li;
     });
