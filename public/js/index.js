@@ -1,5 +1,4 @@
 // Get references to page elements
-var $submitBtn = $('#submit');
 var $findPets = $('#find-pets');
 var $petList = $('#pet-list');
 var $favoriteButton = $('#find-favorites');
@@ -129,7 +128,6 @@ var retrieveFavorites = function () {
 };
 
 // Add event listeners to the submit and delete buttons
-$submitBtn.on('click', handleFormSubmit);
 $findPets.on('click', retrievePetfinderResults);
 $petList.on('click', '.save', favoritePet);
 $favoriteButton.on('click', retrieveFavorites);
