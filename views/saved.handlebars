@@ -14,7 +14,6 @@
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/saved">Favorited</a></li>
                     <li><a href="/login">Log In</a></li>
                     <li><a href="/logout">Log Out</a></li>
                 </ul>
@@ -25,22 +24,22 @@
     <div class="container row">
         <h1>Hi, Welcome to your Dashboard</h1>
         <div class = 'row'>
-            <div class = 'col' id = 'pet-list'>
+            <div class = 'col' id = 'saved-list'>
 
             </div>            
         </div>
         <div class = 'row'>
             <div class = 'col'>
-                <button class = 'btn btn-primary' id = 'find-pets'>Find pets!</button>
+                <button class = 'btn btn-primary' id = 'find-favorites'>Get Favorites!</button>
             </div>
         </div>
         <div class="row">
             <div class="col-8 offset-2">
-                <h3>Pets</h3>
-                <ul id="pet-list" class="list-group">
+                <h3>Saved Pets</h3>
+                <ul id="saved-list" class="list-group">
                     {{#each pets}}
                     <li data-id="{{this.id}}" class="list-group-item">
-                        <a href="pet/{{this.id}}">{{this.text}}</a>
+                        <a href="pet/{{this.id}}">{{this.petname}}</a>
                         <button class="btn btn-danger float-right delete">x</button>
                     </li>
                     {{/each}}
