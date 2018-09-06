@@ -1,5 +1,7 @@
 var db = require('../models');
 var request = require('request');
+var quiz = require('../data/results');
+
 
 module.exports = function(app) {
   app.get('/api/pets', function (req, res) {
@@ -32,5 +34,52 @@ module.exports = function(app) {
         res.json(dbFavorite);
       });
   });
+    app.get("/api/quiz", function(req, res) {
+        res.json(quiz);
+    });
+
+    app.post("/api/quiz", function(req, res) {
+        
+        
+        var petName = "";
+        var petPic = "";
+        var petDesc = "";
+
+        var totalDifference = 1000;
+
+        quiz.forEach(function(results) {
+
+          console.log(results);
+
+            var scoresArray = [];
+            var currentDifference = 1000;
+
+            function add(total, num) {
+                return total + num;
+            }
+
+            for (var i = 0; i < results.scores.length; i++) {
+                scoresArray.push(Math.abs(parseInt(req.body.scores[i]) - parseInt(results.scores[i])));
+
+            }
+
+            currentDifference = scoresArray.reduce(add, 0);
+            console.log(currentDifference);
+            
+            if (currentDifference < totalDifference) {
+                totalDifference = currentDifference;
+
+                petName = results.name;
+                petPic = results.pic;
+                petDesc = results.desc;
+            }
+        });
+
+        
+
+        res.json({ status: "ok", petName: petName, petPic: petPic, petDesc: petDesc });
+
+        quiz.push(req.body);
+    });
 };
 

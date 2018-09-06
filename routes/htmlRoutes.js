@@ -30,13 +30,19 @@ module.exports = function(app) {
       })
         .then(user => {
           req.session.user = user.dataValues;
-          res.redirect('/dashboard');
+          res.redirect('/quiz');
         })
         .catch(error => {
           console.log(error);
           res.redirect('/signup');
         });
     });
+
+  app.route('/quiz')
+    .get((req, res) => {
+      res.render('quiz');
+    });
+
 
   //route for user Login
   app.route('/login')
