@@ -21,6 +21,7 @@
     "morgan": "^1.9.0",
     "mysql2": "^1.5.3",
     "npm": "^6.4.1",
+    "pg": "7.4.3",
     "request": "^2.88.0",
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.1.1"
