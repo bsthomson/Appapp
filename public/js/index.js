@@ -41,7 +41,7 @@ var retrievePetfinderResults = function () {
     var $pets = data.map(function (pet) {
       var $petinfo = $(
         `<p><a id='pet-name' value='${pet.name.$t}' href='/pet/${pet.id.$t}'>${pet.name.$t}</a></p>
-        <p><a id='pet-image' value='${pet.media.photos.photo[1].$t}' img src='${pet.media.photos.photo[1].$t}' alt='animal'></a></p>
+        <p><div id='pet-image' value='${pet.media.photos.photo[1].$t}' img src='${pet.media.photos.photo[1].$t}' alt='animal'></div></p>
         <a id='pet-breed' value='${pet.breeds.breed.$t}'></a>
         <a id='pet-id' value='${pet.id.$t}'></a>
         <a id='pet-shelter-id' value='${pet.shelterPetId.$t}'></a>`
